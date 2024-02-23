@@ -1,0 +1,52 @@
+#:import utils kivy.utils
+
+#:set BACKGROUND_COLOR utils.get_color_from_hex("6D6D6D")
+#:set LINE_COLOR utils.get_color_from_hex("E4E4E4")
+#:set IMPORTANT_TEXT_COLOR utils.get_color_from_hex("27DDC7")
+#:set DRAWING_WIDGET_COLOR utils.get_color_from_hex("D9D9D9")
+
+<BorderedLabel>
+    canvas.before:
+        Color:
+            rgba: LINE_COLOR
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+
+
+BoxLayout:
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgb: BACKGROUND_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        BorderedLabel:
+            size_hint_y: None
+            height: 40
+            text: 'name_of_model'
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                text: 'Accuracy:'
+            Label:
+                text: 'Loss:'
+        DrawingWidget:
+            canvas.before:
+                Color:
+                    rgb: DRAWING_WIDGET_COLOR
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        BorderedLabel:
+            size_hint_y: None
+            height: 40
+            text: 'MNIST Dataset'
+        Label:
+            text: 'Build Model'

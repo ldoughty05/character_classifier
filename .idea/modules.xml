@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/CharacterClassifier.iml" filepath="$PROJECT_DIR$/.idea/CharacterClassifier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../git/soft161-homework/in_class_2.1/.idea/in_class_2.1.iml" filepath="$PROJECT_DIR$/../../git/soft161-homework/in_class_2.1/.idea/in_class_2.1.iml" />
+    </modules>
+  </component>
+</project>
