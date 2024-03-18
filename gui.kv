@@ -1,0 +1,165 @@
+#:import utils kivy.utils
+
+#:set BACKGROUND_COLOR utils.get_color_from_hex("6D6D6D")
+#:set LINE_COLOR utils.get_color_from_hex("E4E4E4")
+#:set IMPORTANT_TEXT_COLOR utils.get_color_from_hex("27DDC7")
+#:set DRAWING_WIDGET_COLOR utils.get_color_from_hex("000000")
+
+<BorderedLabel>
+    canvas.before:
+        Color:
+            rgba: LINE_COLOR
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+    size_hint_y: None
+    height: 40
+    text_size: self.size
+    halign: 'left'
+    valign: 'center'
+    padding: (20,0)
+
+<CharacterGuess>
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: (1, 0, 0)
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    Label:
+        text: root.character
+        color: (0,0,0)
+        font_size: 16
+    Label:
+        text: root.probability
+        color: IMPORTANT_TEXT_COLOR
+
+<ImageSpace>
+    allow_stretch: True
+    source: 'placeholder.png'
+
+
+BoxLayout:
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgb: BACKGROUND_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        id: sidebar
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: LINE_COLOR
+            Line:
+                width: 2
+                rectangle: self.x, self.y, self.width, self.height
+        orientation: 'vertical'
+        size_hint: (0.2, 1)
+        # CharacterGuess objects get placed here on build()
+    BoxLayout:
+        orientation: 'vertical'
+        Spinner:
+            id: model_selector
+            text: app.model_name
+            values: ["A", "B", "C"]
+            on_text: app.model_selected(model_selector.text)
+            color: IMPORTANT_TEXT_COLOR
+            size_hint_y: None
+            height: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    text: 'Accuracy:'
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint_y: 0.3
+                    padding: (20, 5)
+                Label:
+                    text: app.accuracy + "%"
+                    font_size: 45
+                    color: IMPORTANT_TEXT_COLOR
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    text: 'Loss: [color=27DDC7]' + app.loss + '[/color]'
+                    markup: True
+                Label:
+                    text: 'Num Params: [color=27DDC7]' + app.trainable_params + '[/color]'
+                    markup: True
+        DrawingWidget:
+            id: drawing_widget
+            size_hint_y: None
+            height:self.width
+            canvas.before:
+                Color:
+                    rgb: DRAWING_WIDGET_COLOR
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                text: 'Test With Model'
+                on_release:
+                    app.test_drawing_with_model()
+            Button:
+                text: 'Clear'
+                on_release:
+                    app.clear_canvas()
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: LINE_COLOR
+            Line:
+                width: 2
+                rectangle: self.x, self.y, self.width, self.height
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            BorderedLabel:
+                text: app.dataset + " Dataset"
+            BorderedLabel:
+                text: "Device: " + app.device
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.5
+            Image:
+                id: current_image
+                source: app.current_image
+                allow_stretch: True
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    text: '< Current Image'
+                    text_size: self.size
+                    valign: 'top'
+                Label:
+                    id: test_random_image_label
+                    text: 'Label: '
+                    text_size: self.size
+                    valign: 'top'
+            Button:
+                text: 'Get Random Test Image From Dataset'
+                text_size: self.size
+                valign: 'center'
+                halign: 'center'
+                on_press:
+                    app.test_random_image()
+        BorderedLabel:
+            text: "Previous Images "
+        GridLayout:
+            id: previous_test_image_space_grid
+            cols:5
+            size_hint_y: None
+            height:self.width / 5 * 2
+            # ImageSpace objects get placed here on build()
+        Widget:
