@@ -15,9 +15,9 @@ torch.manual_seed(1)
 # Model Configuration
 batch_size = 128
 input_image_height = 28
-kernel_size = 5
+kernel_size = 3
 conv_output_size = (input_image_height - kernel_size + 1) * (input_image_height - kernel_size + 1)
-hidden_size = 800
+hidden_size = 1600
 # global variables so I only have to initialize them once.
 cached_testing_data = None
 cached_training_data = None
@@ -50,16 +50,16 @@ def get_model_instance(device, dataset):
 
 
 def get_model(device, dataset, model_name):
-    model = get_model_instance(device, dataset)
-    model.load_state_dict(torch.load(model_name))
+    #model = get_model_instance(device, dataset)
+    model = torch.load(model_name)
+    #model.load_state_dict(torch.load(model_name))
     return model
 
 
 def evaluate(model_name):
     device = get_device()
     dataset = get_dataset_from_model_name(model_name)
-    model = get_model(device, dataset, model_name)
-    # model.load_state_dict(torch.load(model_name))
+    model = get_model(device, dataset, model_name)  # model gets loaded here
     testing_dataloader = DataLoader(get_testing_data(dataset), batch_size=batch_size)
     loss_functn = nn.CrossEntropyLoss()
     accuracy, loss = test(testing_dataloader, model, loss_functn, device)
@@ -224,8 +224,6 @@ def classify_training_image_index(index, dataset, model_name, filename):
         input_tensor = input_tensor.to(device)
         predictions = model(input_tensor)
     test_index_to_png(index, filename, dataset)
-    print(f"--Label: {get_test_image_label(index, dataset)}, "
-          f"Guess: {predictions_layer_to_sorted_list(predictions, dataset)[0]}")
     return predictions_layer_to_sorted_list(predictions, dataset)
 
 
@@ -235,7 +233,8 @@ def count_parameters(model):
 
 
 def get_test_image_label(index, dataset):
-    return get_testing_data(dataset)[index][1]
+    label_index = get_testing_data(dataset)[index][1]
+    return get_classes(dataset)[label_index]
 
 
 def get_dataset_from_model_name(model_name):
@@ -328,7 +327,7 @@ def main(model_name):
         print("Done!")
 
         # Save model
-        torch.save(model.state_dict(), new_model_name)
+        torch.save(model, new_model_name)
         print(f"Saved Pytorch Model State to {new_model_name}")
     else:
         # Load existing model
@@ -348,6 +347,6 @@ def main(model_name):
 
 
 TRAINING_NEW_MODEL = True
-new_model_name = "MNIST_2.pth"  # should be named '[dataset]_[usually a number].pth'
+new_model_name = "EMNIST_1.pth"  # should be named '[dataset]_[usually a number].pth'
 if __name__ == "__main__":
     main(new_model_name)

@@ -14,7 +14,7 @@ from kivy.uix.label import Label
 from kivy.uix.stencilview import StencilView
 
 import classifier
-from classifier import accessor
+from classifier import accessor, NeuralNetwork
 
 
 class DrawingWidget(StencilView):
